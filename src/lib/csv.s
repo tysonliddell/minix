@@ -1,5 +1,5 @@
 WRITE = 4
-FS = 1
+FS_PROC_NR = 1
 
 ;*===========================================================================*
 ;*				csv & cret				     *
@@ -21,9 +21,9 @@ csv.err:			; come here if stack overflow
 	mov _M+4,#2		; file descriptor 2 is std error
 	mov _M+6,#15		; prepare to print error message
 	mov _M+10,#stkovmsg	; error message
-	mov ax,#_M		; prepare to call sendrec(FS, &M);
+	mov ax,#_M		; prepare to call sendrec(FS_PROC_NR, &M);
 	push ax			; push second parameter
-	mov ax,#FS		; prepare to push first parameter
+	mov ax,#FS_PROC_NR      ; prepare to push first parameter
 	push ax			; push first parameter
 	call _sendrec		; write(fd, stkovmsg, 15);
 	add sp,#4		; clean up stack
