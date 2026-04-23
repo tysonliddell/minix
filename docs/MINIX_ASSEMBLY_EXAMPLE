@@ -1,0 +1,76 @@
+Assm_example
+asw 2 March 2000
+
+I was recently asked a question about Minix assembly language syntax,
+and I realized that, although there are lots of examples of Minix
+assembly language in the source code, and there are a few files with
+information about the assembly language in ftp://minix1/pub/info,
+there are very few, if any, examples of how to write a standalone
+program in assembly.  Now, why would anyone want to do that? Well,
+some of us create web pages with vi or emacs.
+
+Several years ago I was teaching an OS course using Minix 1.5, and was
+also teaching assembly language using MASM to the same group of students.
+As a demonstration I put together a few files to show how to write a
+Minix program in assembly language. My main program shows how to use
+a few of the directives, and looked like this:
+
+| hola.s
+| version ensamblador de hello.c
+| para ensamblador asld de Minix
+| asw 28.5.93
+
+.globl _main
+.text
+_main:  push bp
+        mov bp,sp
+        mov ax,#msg
+        push ax
+
+        call _printf
+
+        pop bx
+        xor ax,ax
+        push ax
+        call _exit
+
+.data
+msg:    .ascii  "Hola, mundo\n"
+
+To make a standalone program this must be linked with Minix library
+routines. The Makefile handles all of this. my Makefile for the above
+program looks like this:
+
+hola:
+        asld crtso.s hola.s /usr/lib/libc.a end.s
+        mv a.out hola
+
+Crtso.s is the C Run Time Start Off routine, and is linked with all
+programs compiled under Minix. It takes care of setting up arguments (if
+any) and environment variables to be passed by the operating system to
+a program. End.s similarly handles passing return codes back to the OS.
+
+Note that this Makefile assumes that copies of crtso.s and end.s are
+in the same directory with the hola.s source code. A useful Makefile
+should include the paths to the standard locations of these files.
+
+Also note that Minix 2.0.x does not have an asld command. In Minix 2.0
+you just call the C compiler (cc) and it invokes the assembler when it
+sees that the source files are written in assembler. I haven't tested
+this, and some compiler flags may be needed.  The above assembler code
+is for 16 bit Minix and the Minix systems I have available now are
+32-bit Minix. Also, it is possible that the code above, written for
+use with Minix 1.5, may not work correctly with Minix 2.0.
+
+If someone will update this so it really works under Minix 2.0 I'd
+love to have a copy to post on my site. Even better, send me examples
+for both 16-bit and 32-bit Minix. A complete example requires both
+an assembly language main program and a Makefile, including paths to
+additional files needed to compile a complete working program.
+
++----------------------------------+
+| Albert S. Woodhull               |
+| Hampshire College, Amherst, MA   |
+| awoodhull@hampshire.edu          |
+| http://minix1.hampshire.edu/asw/ |
++----------------------------------+
