@@ -1,6 +1,9 @@
-CC=/opt/pkg/ack/bin/ack
-#CFLAGS=-mpc86 -Di8088 -I./include -w
-CFLAGS=-mpc86 -Di8088 -I./src/include -w
+CC=bcc
+CFLAGS=-0 -Di8088 -I./src/include -w
+
+# use -a flag for MINIX asld compatibility
+AS=as86
+ASFLAGS=-0 -a
 
 LIB_C_SRC=$(wildcard ./src/lib/*.c)
 LIB_S_SRC=$(wildcard ./src/lib/*.s)
@@ -11,7 +14,7 @@ all:
 	@echo TODO
 
 .PHONY: libc
-libc: $(LIB_C_OBJ)
+libc: $(LIB_C_OBJ) $(LIB_S_OBJ)
 
 .PHONY: clean
 clean:

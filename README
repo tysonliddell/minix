@@ -1,2 +1,15 @@
 # MINIX 1.1 source code
 Repo includes the MINIX 1.1 source code.
+
+Setting up an appropriate 8086/8088 cross-compiler on modern hardware proved
+easier with Bruce Evans's bcc/as86/ld86, rathen than the original MINIX
+toolchain (ACK - Amsterdam Compiler Kit). Minimal updates to the MINIX source
+code are included to work with this newer toolchain.
+
+## Dependencies
+- bcc
+- as86
+- ld86
+
+## Building MINIX
+TODO
