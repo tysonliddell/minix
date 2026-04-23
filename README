@@ -7,9 +7,9 @@ toolchain (ACK - Amsterdam Compiler Kit). Minimal updates to the MINIX source
 code are included to work with this newer toolchain.
 
 ## Dependencies
-- bcc
-- as86
-- ld86
+- bcc (0.16.21 used)
+- as86 (0.16.21 used)
+- ld86 (0.16.21 used)
 
 ## Building MINIX
 TODO
