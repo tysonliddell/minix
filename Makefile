@@ -1,5 +1,5 @@
 CC=bcc
-CFLAGS=-0 -Di8088 -I./src/include -w
+CFLAGS=-0 -Di8088 -I./src/include -w -O
 
 # use -a flag for MINIX asld compatibility
 AS=as86
