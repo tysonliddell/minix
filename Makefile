@@ -1,5 +1,6 @@
 .PHONY: all
-all: dev86 libc
+all:
+	echo TODO
 
 .PHONY: dev86
 dev86:
@@ -16,4 +17,4 @@ libc:
 .PHONY: clean
 clean:
 	$(MAKE) -C ./src/lib clean
-	rm ./lib/libc.a ./lib/crtso.o ./lib/end.o
+	rm -f ./lib/libc.a ./lib/crtso.o ./lib/end.o
