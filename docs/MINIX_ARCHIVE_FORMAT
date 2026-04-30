@@ -1,0 +1,43 @@
+## Archive format
+The MINIX archive format uses the ACK 0xFF65 magic number, seen in the ACK
+sourcecode here (in octal form):
+https://github.com/davidgiven/ack/blob/cd8805a0ad462c120ef394225c73ce725d271740/h/arch.h#L10
+
+```
+$ hd ./misc/libc-original.a | head -n1
+00000000  65 ff 63 6c 65 61 6e 75  70 2e 73 00 00 00 00 00  |e.cleanup.s.....|
+```
+
+This is different to the archives produced by ar86 and will need to taken into
+consideration if cross-compiling libc.a for MINIX.
+
+Archive spec (taken from the MINIX 1 book):
+```
+MAGIC_NUMBER
+(header, file)
+(header, file)
+(header, file)
+(header, file)
+...
+```
+
+where each 26 byte header consists of
+```
+file name                 (14 bytes)
+time of last modification  (4 bytes)
+user id       (truncated to 1 byte)
+group id                   (1 byte)
+file mode protection bits  (2 bytes)
+file length                (4 bytes)
+```
+
+Each file that has an odd number of bytes is padded with an extra zero byte to
+make it even. The extra zero byte does not count towards the file size field.
+The two longs in the header are high-order word first to be V7 compatible.
+
+## Library format
+The libc.a archive in MINIX contains packed assembly code rather than object
+files. The src/commands/libpack.c src/commands/libupack.c tools can be used to
+convert between normal assembly and packed assembly formats. It's a
+straightforward encoding mapping the most used assembly instructions to single
+non-ascii byte values and leaving the rest of the assembly code as-is.
