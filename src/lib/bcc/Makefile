@@ -15,7 +15,8 @@ LOBJ=__laddl.o __landl.o __lcmpl.o __lcoml.o __ldecl.o __ldivl.o __ldivul.o \
 SSRC=string.c
 SOBJ=memcpy.o
 
-CC=~/dev/dev2/dev86/bin/bcc
+DEV86_PATH=../../../vendor/dev86
+CC=$(DEV86_PATH)/bin/bcc
 CFLAGS=-0
 
 .PHONY: all
@@ -27,11 +28,8 @@ $(IOBJ): $(ISRC)
 $(LOBJ): $(LSRC)
 	$(CC) $(CFLAGS) -DL_$* $< -c -o $*.o
 
-$(SOBJ): $(SSRC) string.h
+$(SOBJ): $(SSRC)
 	$(CC) $(CFLAGS) -DL_$* $< -c -o $*.o
-
-ldiv.o: ldiv.c
-__ldivmod.o: __ldivmod.c
 
 .PHONY: clean
 clean:

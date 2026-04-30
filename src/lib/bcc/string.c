@@ -3,7 +3,7 @@
  * under the GNU Library General Public License.
  */
 
-#include "string.h"
+#include <string.h>
 #include <malloc.h>
 
 #ifdef __AS386_16__

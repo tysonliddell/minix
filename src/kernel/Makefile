@@ -1,9 +1,10 @@
 # The kernel directory contains files xt_wini.c and at_wini.c.  Before running
 # make you must copy one of these to wini.c, depending on whether you have a
 # PC or an AT.  You must do this even if you do not have a hard disk..
-CC=~/dev/dev2/dev86/bin/bcc
-AS=~/dev/dev2/dev86/bin/as86
-LD=~/dev/dev2/dev86/bin/ld86
+DEV86_BIN=../../vendor/bcc/bin
+CC=$(DEV86_BIN)/bcc
+AS=$(DEV86_BIN)/as86
+LD=$(DEV86_BIN)/ld86
 ASFLAGS=-0 -a
 CFLAGS=-0 -Di8088 -I../include -O
 

@@ -1,7 +1,8 @@
-CC=../../vendor/dev86/bin/bcc
-AS=../../vendor/dev86/bin/as86
-LD=../../vendor/dev86/bin/ld86
-AR=../../vendor/dev86/bin/ar86
+DEV86_BIN=../../vendor/bcc/bin
+CC=$(DEV86_BIN)/bcc
+AS=$(DEV86_BIN)/as86
+LD=$(DEV86_BIN)/ld86
+AR=$(DEV86_BIN)/ar86
 
 CFLAGS=-0 -Di8088
 

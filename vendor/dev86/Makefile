@@ -12,7 +12,7 @@ TARGETS=install clean other \
     config tests dis88 doselks bootblocks ld86r
 
 ELKSSRC= /usr/src/elks
-PREFIX=  /usr
+PREFIX=  $(CURDIR)/../bcc
 BINDIR=	 $(PREFIX)/bin
 LIBDIR=  $(PREFIX)/lib/bcc
 INCLDIR= $(PREFIX)/lib/bcc

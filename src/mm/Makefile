@@ -1,6 +1,7 @@
-CC=~/dev/dev2/dev86/bin/bcc
-AS=~/dev/dev2/dev86/bin/as86
-LD=~/dev/dev2/dev86/bin/ld86
+DEV86_BIN=../../vendor/bcc/bin
+CC=$(DEV86_BIN)/bcc
+AS=$(DEV86_BIN)/as86
+LD=$(DEV86_BIN)/ld86
 ASFLAGS=-0 -a
 CFLAGS=-0 -Di8088 -I../include -O
 

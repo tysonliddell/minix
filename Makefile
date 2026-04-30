@@ -8,6 +8,7 @@ all: libc kernel mm fs
 .PHONY: dev86
 dev86:
 	$(MAKE) -C ./vendor/dev86
+	$(MAKE) -C ./vendor/dev86 install
 
 .PHONY: kernel
 kernel:
