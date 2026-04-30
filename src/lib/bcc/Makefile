@@ -12,16 +12,22 @@ LOBJ=__laddl.o __landl.o __lcmpl.o __lcoml.o __ldecl.o __ldivl.o __ldivul.o \
      __leorl.o __lincl.o __lmodl.o __lmodul.o __lmull.o __lnegl.o __lorl.o \
      __lsll.o __lsrl.o __lsrul.o __lsubl.o __ltstl.o
 
+SSRC=string.c
+SOBJ=memcpy.o
+
 CC=~/dev/dev2/dev86/bin/bcc
 CFLAGS=-0
 
 .PHONY: all
-all: $(IOBJ) $(LOBJ) ldiv.o __ldivmod.o
+all: $(IOBJ) $(LOBJ) $(SOBJ) ldiv.o __ldivmod.o
 
 $(IOBJ): $(ISRC)
 	$(CC) $(CFLAGS) -DL_$* $< -c -o $*.o
 
 $(LOBJ): $(LSRC)
+	$(CC) $(CFLAGS) -DL_$* $< -c -o $*.o
+
+$(SOBJ): $(SSRC) string.h
 	$(CC) $(CFLAGS) -DL_$* $< -c -o $*.o
 
 ldiv.o: ldiv.c
