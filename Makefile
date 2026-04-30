@@ -1,21 +1,18 @@
-CC=bcc
-CFLAGS=-0 -Di8088 -I./src/include -w -O
+.PHONY: all
+all: dev86 libc
 
-# use -a flag for MINIX asld compatibility
-AS=as86
-ASFLAGS=-0 -a
-
-LIB_C_SRC=$(wildcard ./src/lib/*.c)
-LIB_S_SRC=$(wildcard ./src/lib/*.s)
-LIB_C_OBJ=$(LIB_C_SRC:.c=.o)
-LIB_S_OBJ=$(LIB_S_SRC:.s=.o)
-
-all:
-	@echo TODO
+.PHONY: dev86
+dev86:
+	$(MAKE) -C ./vendor/dev86
 
 .PHONY: libc
-libc: $(LIB_C_OBJ) $(LIB_S_OBJ)
+libc:
+	$(MAKE) -C ./src/lib
+	cp ./src/lib/libc.a ./lib
+	cp ./src/lib/crtso.o ./lib
+	cp ./src/lib/end.o ./lib
 
 .PHONY: clean
 clean:
-	rm ./src/lib/*.o
+	$(MAKE) -C ./src/lib clean
+	rm ./lib/libc.a ./lib/crtso.o ./lib/end.o

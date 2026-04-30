@@ -4,6 +4,8 @@
 
 .globl _main, _exit, crtso, _environ
 .globl begtext, begdata, begbss, endtext, enddata, endbss
+entry crtso
+
 .text
 begtext:
 crtso:		mov	bx,sp
