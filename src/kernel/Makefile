@@ -98,3 +98,8 @@ wini.o:	$h/callnr.h
 wini.o:	$h/com.h
 wini.o:	$h/error.h
 wini.o:	proc.h
+
+.PHONY: clean
+clean:
+	rm -f *.o
+	rm -f kernel

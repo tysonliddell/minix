@@ -3,12 +3,15 @@ LIB_DIR = ./lib
 LIB_FILES = $(addprefix $(LIB_DIR)/,libc.a crtso.o end.o)
 
 .PHONY: all
-all:
-	echo TODO
+all: libc kernel
 
 .PHONY: dev86
 dev86:
 	$(MAKE) -C ./vendor/dev86
+
+.PHONY: kernel
+kernel:
+	$(MAKE) -C ./src/kernel
 
 .PHONY: libc
 libc: $(LIB_FILES)
@@ -27,6 +30,7 @@ libc_build:
 
 .PHONY: clean
 clean:
+	$(MAKE) -C ./src/kernel clean
 	$(MAKE) -C ./src/lib clean
 	rm -f $(LIB_FILES)
 	rmdir $(LIB_DIR)
