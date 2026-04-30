@@ -1,4 +1,6 @@
 .globl _main, _stackpt, begtext, begdata, begbss, _data_org, _exit
+entry begdata       ; force ld86 to include data (magic number)
+
 .text
 begtext:
 	jmp L0

@@ -4,7 +4,7 @@
 
 .globl _main, _exit, crtso, _environ
 .globl begtext, begdata, begbss, endtext, enddata, endbss
-entry crtso
+entry crtso     ; force ld86 to include crtso label
 
 .text
 begtext:

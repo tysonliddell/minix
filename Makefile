@@ -14,11 +14,11 @@ kernel:
 	$(MAKE) -C ./src/kernel
 
 .PHONY: mm
-kernel:
+mm:
 	$(MAKE) -C ./src/mm
 
 .PHONY: fs
-kernel:
+fs:
 	$(MAKE) -C ./src/fs
 
 .PHONY: libc
