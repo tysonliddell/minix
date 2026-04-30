@@ -7,6 +7,7 @@ dev86:
 
 .PHONY: libc
 libc:
+	mkdir -p ./lib
 	$(MAKE) -C ./src/lib
 	cp ./src/lib/libc.a ./lib
 	cp ./src/lib/crtso.o ./lib
