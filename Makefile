@@ -3,7 +3,7 @@ LIB_DIR = ./lib
 LIB_FILES = $(addprefix $(LIB_DIR)/,libc.a crtso.o head.o end.o)
 
 .PHONY: all
-all: libc kernel mm fs
+all: libc kernel mm fs tools
 
 .PHONY: dev86
 dev86:
@@ -21,6 +21,10 @@ mm:
 .PHONY: fs
 fs:
 	$(MAKE) -C ./src/fs
+
+.PHONY: tools
+tools:
+	$(MAKE) -C ./src/tools
 
 .PHONY: libc
 libc: $(LIB_FILES)
@@ -40,6 +44,7 @@ libc_build:
 
 .PHONY: clean
 clean:
+	$(MAKE) -C ./src/tools clean
 	$(MAKE) -C ./src/fs clean
 	$(MAKE) -C ./src/mm clean
 	$(MAKE) -C ./src/kernel clean
