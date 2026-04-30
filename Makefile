@@ -1,9 +1,9 @@
 LIB_SRC_DIR = ./src/lib
 LIB_DIR = ./lib
-LIB_FILES = $(addprefix $(LIB_DIR)/,libc.a crtso.o end.o)
+LIB_FILES = $(addprefix $(LIB_DIR)/,libc.a crtso.o head.o end.o)
 
 .PHONY: all
-all: libc kernel
+all: libc kernel mm fs
 
 .PHONY: dev86
 dev86:
@@ -13,12 +13,21 @@ dev86:
 kernel:
 	$(MAKE) -C ./src/kernel
 
+.PHONY: mm
+kernel:
+	$(MAKE) -C ./src/mm
+
+.PHONY: fs
+kernel:
+	$(MAKE) -C ./src/fs
+
 .PHONY: libc
 libc: $(LIB_FILES)
 
 $(LIB_DIR)/libc.a: $(LIB_SRC_DIR)/libc.a
 $(LIB_DIR)/crtso.o: $(LIB_SRC_DIR)/crtso.o
 $(LIB_DIR)/end.o: $(LIB_SRC_DIR)/end.o
+$(LIB_DIR)/head.o: $(LIB_SRC_DIR)/head.o
 
 $(LIB_DIR)/%: | libc_build
 	cp $< $@
@@ -30,7 +39,9 @@ libc_build:
 
 .PHONY: clean
 clean:
+	$(MAKE) -C ./src/fs clean
+	$(MAKE) -C ./src/mm clean
 	$(MAKE) -C ./src/kernel clean
 	$(MAKE) -C ./src/lib clean
 	rm -f $(LIB_FILES)
-	rmdir $(LIB_DIR)
+	rm -rf $(LIB_DIR)

@@ -12,17 +12,19 @@ LIB_C_SRC=$(wildcard *.c)
 LIB_S_SRC=brksize.s  catchsig.s  getutil.s  sendrec.s  setjmp.s
 LIB_C_OBJ=$(LIB_C_SRC:.c=.o)
 LIB_S_OBJ=$(LIB_S_SRC:.s=.o)
-BCC_OBJ=$(wildcard bcc/*.o)
+BCC_OBJ=$(wildcard ./bcc/*.o)
 LIBC=libc.a
 
 CRTSO_OBJ=crtso.o
 END_OBJ=end.o
+HEAD_OBJ=head.o
 
 .PHONY: all
 all: libc c_runtime
 
 .PHONY: libc
-libc: $(LIBC) | build_bcc
+libc: build_bcc
+	@$(MAKE) $(LIBC)
 
 .PHONY: build_bcc
 build_bcc:
@@ -33,7 +35,7 @@ $(LIBC): $(LIB_C_OBJ) $(LIB_S_OBJ) $(BCC_OBJ)
 	$(AR) r $(LIBC) $^
 
 .PHONY: c_runtime
-c_runtime: $(CRTSO_OBJ) $(END_OBJ)
+c_runtime: $(CRTSO_OBJ) $(END_OBJ) $(HEAD_OBJ)
 
 .PHONY: clean
 clean:
