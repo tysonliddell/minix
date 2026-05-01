@@ -3,7 +3,10 @@ LIB_DIR = ./lib
 LIB_FILES = $(addprefix $(LIB_DIR)/,libc.a crtso.o head.o end.o)
 
 .PHONY: all
-all: libc kernel mm fs tools
+all: libc minix
+
+.PHONY: minix
+minix: kernel mm fs tools
 
 .PHONY: dev86
 dev86:
