@@ -152,6 +152,9 @@ make.fil
 
 unproto/unproto
 
+dis88/a.out.h
+dis88/dis88
+
 #
 # Backups / patches
 #
