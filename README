@@ -1,11 +1,14 @@
-# MINIX 1.1 source code
-Repo includes the MINIX 1.1 source code.
+# MINIX 1.1
+MINIX 1.1 source code and cross-platform 8088 build environment.
 
 ## TL;DR
 - Run `make dev86` to setup the 8088 cross-compile toolchain.
 - Build MINIX libc for the host with `make libc`.
 - Build all of MINIX with `make`.
 - Create a bootable MINIX image with `make disk`.
+- Run `source ./scripts/activate-shell` from the project root to spawn a new
+  shell with the dev86 toolchain added to your path, making life easier when
+  running the toolchain outside of `make`.
 
 ## Running MINIX
 ### Using an 8088 emulator
@@ -21,6 +24,14 @@ dev86 project), rathen than the original MINIX toolchain (ACK - Amsterdam
 Compiler Kit). Minimal updates to the MINIX source code are included to work
 with this newer toolchain. Dev86 is included in `vendor/dev86` directory and
 can be built on the host machine with `make dev86`.
+
+The project makefiles use hardcoded paths to utilise the included dev86
+toolchain, but it can get tedious as a human to use these same paths when
+running the tools yourself. To update your shell's $PATH and $MANPATH variables
+run `source ./scripts/activate-shell` from the project root. This allows the
+more convenient `bcc`, `man bcc`, etc. commands to be used rather than
+something like `../../vendor/bcc/bin/bcc` or `MANPATH=../../vendor/bcc/man man
+bcc`.
 
 ### Building MINIX
 Running `make` will build each part of MINIX: libc, kernel, mm, fs, init, fsck

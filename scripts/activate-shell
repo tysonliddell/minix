@@ -1,0 +1,5 @@
+BCC_PATH=$PWD/vendor/bcc \
+PATH=$BCC_PATH/bin:$PATH \
+MANPATH=$BCC_PATH/man:$MANPATH \
+PS1="$PS1[dev86]: " \
+bash --noprofile --norc
