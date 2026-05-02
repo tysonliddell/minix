@@ -1,0 +1,19 @@
+# Changelog
+- Vendored dev86 toolchain into the project for portability to make builds
+  easier.
+- Original MINIX Makefiles updated to use dev86 toolchain. Top-level makefile
+  added.
+- Added bcc compiler helper methods to MINIX libc to satisfy the linker.
+- Assembly comments ported to as86: `|` -> `;`/`!`/
+- Renamed a few assembly macros that clash with keywords in as86.
+- `jmp` assembly instructions replaced with `jmp near` when 16-bit jmp needed.
+- `out`/`in` assembly instructions ported to as86 `outb`/`inb`.
+- Made minimal changes to crtso.s, head.s and end.s for compatibility with
+  dev86 toolchain.
+- Fixed a couple of breaking typos in MINIX sources discovered during builds.
+- Ported boot MINIX diskette `build.c` program to Python to make bootable MINIX
+  disk images from the host machine.
+- Removed unneeded begtext, begdata, begbss, endtext, enddata, endbss labels
+  from bootblok.s. `asld` might have needed these, but `as86 -b` complains.
+- Updated bootblok makefile comment since as86 generates different (but
+  equivalent) opcodes for `xor si,si` and `xor di,di` instructions.
