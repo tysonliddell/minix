@@ -1,4 +1,4 @@
-# build.sh
+# build-boot-disk.py
 # Creates a 360K .img flopply image file containing a bootable MINIX image.
 
 from dataclasses import dataclass
