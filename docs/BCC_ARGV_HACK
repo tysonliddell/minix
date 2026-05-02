@@ -1,0 +1,101 @@
+2026-05-02
+
+## Issue
+
+I ran into a compiler issue (bug?) when replacing crt0.o provided by bcc with
+custom C runtime code. When compiling a program with an argc/argv `main`
+signature, a dangling `.globl ___mkargv` declaration is left in the code:
+
+```
+int main(argc, argv)
+char **argv;
+{
+    int i;
+
+    printf("arg count: %d\n", argc);
+    for (i=0; i < argc; i++) {
+        printf("arg %d: %s\n", i, argv[i]);
+    }
+
+    return 42;
+}
+```
+
+The generated assembly file declares a global reference to `___mkargv_`, as
+shown below, but it isn't called anywhere.
+```
+! 129 # 3 "main.c"
+! 3 int main(argc, argv)
+! 4 char **argv;
+.text
+export	_main
+_main:
+!BCC_EOS
+! 5 {
+.globl	___mkargv
+! 6     int i;
+!BCC_EOS
+! 7 
+! 8     printf("arg count: %d\n", argc);
+```
+
+Leading to the following linker error:
+```
+../../vendor/bcc/bin/ld86 -0 -s -L../../lib -Cso -lc main.o -Oend.o -o argv
+undefined symbol: ___mkargv
+make: *** [Makefile:26: argv] Error 1
+```
+
+## Solution
+
+Since the MINIX `crtso.o` code already handles setting up arc/argv for main, we
+don't need the `___mkargv` routine in our code. I hacked around this by
+creating a small assembly file with a trivial definition for `___mkargc`
+routine (even though it's never called), which was enough to please the linker:
+
+```
+; hack.s
+.globl	___mkargv
+___mkargv: jmp ___mkargv    ; we should never get here
+```
+
+Success!
+```
+../../vendor/bcc/bin/ld86 -0 -s -L../../lib -Cso -lc main.o hack.o -Oend.o -o argv && echo ok!
+ok!
+```
+
+## A better solution
+Looking through the bcc source code I found the the following dummy declaration
+is used to satisfy the linker requirement in instances like this:
+
+```
+...
+loop_safe:
+  .long 0
+  .text
+
+export ___mkargv
+___mkargv:      ! BCC Tells linker to init argv ... none needed.
+
+export ___cstartup
+___cstartup:        ! Crt0 startup (Linux style)
+  mov   eax,[esp]
+...
+```
+
+so I added the following to the MINIX crtso.s to ensure that the linker will
+succeed for all MINIX programs that use argc/argc:
+
+```
+...
+; Note: BCC Tells the linker to init argv by adding a global reference to its
+; ___mkargv label in main. This label will never be used when using MINIX
+; crtso.o, but we need to define the label to keep the linker happy.
+.text
+___mkargv:  ; ___mkargv will never be called
+begtext:
+crtso:		mov	bx,sp
+		mov	cx,(bx)
+...
+```

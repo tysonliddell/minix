@@ -2,11 +2,15 @@
 ; arguments as put on the stack by EXEC, and to parse them and set them up the
 ; way _main expects them.
 
-.globl _main, _exit, crtso, _environ
+.globl _main, _exit, crtso, _environ, ___mkargv
 .globl begtext, begdata, begbss, endtext, enddata, endbss
 entry crtso     ; force ld86 to include crtso label
 
+; Note: BCC Tells the linker to init argv by adding a global reference to its
+; ___mkargv label in main. This label will never be used when using MINIX
+; crtso.o, but we need to define the label to keep the linker happy.
 .text
+___mkargv:  ; ___mkargv will never be called
 begtext:
 crtso:		mov	bx,sp
 		mov	cx,(bx)
