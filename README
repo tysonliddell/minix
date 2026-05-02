@@ -1,6 +1,13 @@
 # MINIX 1.1
 MINIX 1.1 source code and cross-platform 8088 build environment.
 
+-------------------------------------------------------------------------------
+DISCLAIMER: No LLMs were used to produce any of my contributions to the source
+code, prose or other material in this project.
+
+Tyson
+-------------------------------------------------------------------------------
+
 ## TL;DR
 - Run `make dev86` to setup the 8088 cross-compile toolchain.
 - Build MINIX libc for the host with `make libc`.
@@ -9,6 +16,51 @@ MINIX 1.1 source code and cross-platform 8088 build environment.
 - Run `source ./scripts/activate-shell` from the project root to spawn a new
   shell with the dev86 toolchain added to your path, making life easier when
   running the toolchain outside of `make`.
+
+## What is this?
+
+This project allows the original MINIX 1.1 operating system, as distributed at
+the time of the launch of Tanenbaum's original "Operating Systems: Design and
+Implementation" book in 1987, to be built on a modern system (tested with an
+x86-64), dramatically improving the compilation speed and developer experience.
+
+Developing MINIX on an original 4.77 MHz IBM XT with 640K of RAM is a tedious
+process by today's standards, but I encourage everyone to try this at least
+once. Building takes a couple of hours and many floppy disk swaps, and the
+environment contains only a rudimentary text editor (`mined`). On the other
+hand, cross-compiling MINIX from a modern PC takes just a couple of seconds
+(tested on an AMD Ryzen 9 6900HX), doesn't require floppy disk swaps to work
+with different parts of the source tree and allows working from your most
+productive editer/IDE.
+
+-------------------------------------------------------------------------------
+
+The first edition of Tanenbaum's "Operating Systems: Design and Implementation"
+was released in 1987. It contains a detailed explanation of both the concepts
+and source code that make up the original MINIX operating system. This makes
+MINIX a great way to get your hands dirty and explore the internals of a fully
+functioning operating system.
+
+MINIX 1.1 was designed to run on the 16-bit 8086/8088 processor, which is no
+longer supported as a compilation target by modern compilers like gcc or clang.
+Furthermore, the source code is written in a very old dialect of C (K&R) and
+the assembly listings use an old PC-IX syntax. This means that the MINIX 1.1
+source code cannot be built using the standard toolchains of today.
+
+However, MINIX 1 is still valuable as both an educational tool and to satisfy
+historical curiosity. Luckily, the dev86 cross-compilation toolchain has been
+maintained for many years and is relatively straitforward to set up on modern
+hardware. It includes an 8088 K&R C cross-compiler (Bruce's C Compiler),
+assembler, linker and a bunch of other helpful tools.
+
+This project pulls together these tools and the MINIX source code making it
+easy to build the original MINIX OS for the original hardware. It also produces
+360K MINIX boot floppy disk images that are compatible with the IBM PC/XT
+(5150/5160) machines that the OS was originally designed to run on. The disk
+images can be used with PC emulators like 86Box, MartyPC and pcjs, or with
+period hardware.
+
+-------------------------------------------------------------------------------
 
 ## Running MINIX
 ### Using an 8088 emulator
