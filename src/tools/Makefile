@@ -130,5 +130,6 @@ at.setup:	mkfs proto.at.setup rc
 .PHONY: clean
 clean:
 	rm -f *.o
+	rm -f bootblok
 	rm -f init
 	rm -f fsck
