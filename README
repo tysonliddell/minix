@@ -4,8 +4,7 @@ Repo includes the MINIX 1.1 source code.
 ## TL;DR
 - Run `make dev86` to setup the 8088 cross-compile toolchain.
 - Build MINIX libc for the host with `make libc`.
-- Build MINIX with `make minix`.
-- Build both libc and MINIX with `make`.
+- Build all of MINIX with `make`.
 - Create a bootable MINIX image with `make disk`.
 
 ## Running MINIX
@@ -24,7 +23,7 @@ with this newer toolchain. Dev86 is included in `vendor/dev86` directory and
 can be built on the host machine with `make dev86`.
 
 ### Building MINIX
-Running `make minix` will build each part of MINIX: kernel, mm, fs, init, fsck
+Running `make` will build each part of MINIX: libc, kernel, mm, fs, init, fsck
 and bootblok. Running `make disk` will create a 360K floppy disk image to boot
 MINIX from an IBM PC/XT or simulator.
 

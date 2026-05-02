@@ -3,11 +3,13 @@ LIB_DIR = ./lib
 LIB_FILES = $(addprefix $(LIB_DIR)/,libc.a crtso.o head.o end.o)
 BUILD_BOOTDISK = ./scripts/build-boot-disk.py
 BOOTDISK_OUT = ./MINIX-boot.img
+DISK_REQS = ./misc/bootblok ./src/kernel/kernel ./src/mm/mm ./src/fs/fs \
+    ./src/tools/init ./src/tools/fsck
 
 .PHONY: all minix dev86 bootblok kernel mm fs init fsck tools disk libc libc_build clean
 
-all: libc minix
-minix: bootblok kernel mm fs init fsck
+all: minix
+minix: libc bootblok kernel mm fs init fsck
 
 dev86:
 	$(MAKE) -C ./vendor/dev86
@@ -31,10 +33,11 @@ fsck: tools
 tools:
 	$(MAKE) -C ./src/tools
 
-disk: minix
+disk: minix $(BOOTDISK_OUT)
+
+$(BOOTDISK_OUT): $(DISK_REQS)
 	@echo TODO: add bookblok to build
-	python3 $(BUILD_BOOTDISK) ./misc/bootblok ./src/kernel/kernel ./src/mm/mm \
-		./src/fs/fs ./src/tools/init ./src/tools/fsck $(BOOTDISK_OUT)
+	python3 $(BUILD_BOOTDISK) $(DISK_REQS) $(BOOTDISK_OUT)
 
 libc: $(LIB_FILES)
 
