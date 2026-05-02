@@ -15,6 +15,12 @@ CLICK_ALIGN = 16
 CLICK_SHIFT = 4
 DS_OFFSET = 4           # position of DS written in kernel text seg
 
+def u16le(i_val):
+    return i_val.to_bytes(2, "little")
+
+def le_to_int(bytes_):
+    return int.from_bytes(bytes_, "little")
+
 @dataclass
 class HeaderInfo:
     text_size: int
@@ -42,7 +48,7 @@ class HeaderInfo:
 
     @classmethod
     def from_bytes(cls, bytes_):
-        magic = int.from_bytes(bytes_[0:4], "little")
+        magic = le_to_int(bytes_[0:4])
         if magic == EXEC_MAGIC:
             is_sep = False
         elif magic == SEP_MAGIC:
@@ -53,12 +59,12 @@ class HeaderInfo:
         assert HEADER_LEN == bytes_[4], "Bad header length field"
 
         hdr = cls(
-            text_size=int.from_bytes(bytes_[8:12], "little"),
-            data_size=int.from_bytes(bytes_[12:16], "little"),
-            bss_size=int.from_bytes(bytes_[16:20], "little"),
-            entry_point=int.from_bytes(bytes_[20:24], "little"),
-            total_mem_alloc=int.from_bytes(bytes_[24:28], "little"),
-            symbols_size=int.from_bytes(bytes_[28:32], "little"),
+            text_size=le_to_int(bytes_[8:12]),
+            data_size=le_to_int(bytes_[12:16]),
+            bss_size=le_to_int(bytes_[16:20]),
+            entry_point=le_to_int(bytes_[20:24]),
+            total_mem_alloc=le_to_int(bytes_[24:28]),
+            symbols_size=le_to_int(bytes_[28:32]),
             is_sep=is_sep,
         )
 
@@ -96,42 +102,42 @@ def build_360k_floppy_image(bootblok, kernel, mm, fs, init, fsck):
     cs_fsck = PROG_ORG + minix_size
     ds_fsck = cs_fsck + (fsck_header.text_size if fsck_header.is_sep else 0)
     pc_fsck = 0
-    bootblok_padded[504:506] = num_sectors.to_bytes(2, "little")
-    bootblok_padded[506:508] = (ds_fsck >> CLICK_SHIFT).to_bytes(2, "little")
-    bootblok_padded[508:510] = pc_fsck.to_bytes(2, "little")
-    bootblok_padded[510:512] = (cs_fsck >> CLICK_SHIFT).to_bytes(2, "little")
+    bootblok_padded[504:506] = u16le(num_sectors)
+    bootblok_padded[506:508] = u16le(ds_fsck >> CLICK_SHIFT)
+    bootblok_padded[508:510] = u16le(pc_fsck)
+    bootblok_padded[510:512] = u16le(cs_fsck >> CLICK_SHIFT)
 
     # check magic
     assert (
-        KERNEL_D_MAGIC == int.from_bytes(kernel_padded[kernel_header.text_size:][:2], "little")
+        KERNEL_D_MAGIC == le_to_int(kernel_padded[kernel_header.text_size:][:2])
     ), "Bad kernel data magic"
     assert (
-        FS_MM_D_MAGIC == int.from_bytes(fs_padded[fs_header.text_size:][:2], "little")
+        FS_MM_D_MAGIC == le_to_int(fs_padded[fs_header.text_size:][:2])
     ), "Bad fs data magic"
     assert (
-        FS_MM_D_MAGIC == int.from_bytes(mm_padded[mm_header.text_size:][:2], "little")
+        FS_MM_D_MAGIC == le_to_int(mm_padded[mm_header.text_size:][:2])
     ), "Bad mm data magic"
 
     # patch kernel
     pos = kernel_header.text_size   # start of data section
     for prog_hdr in [kernel_header, mm_header, fs_header, init_header]:
         text_size, data_size = prog_hdr.i_d_bss_len()
-        kernel_padded[pos:pos+2] = (text_size >> CLICK_SHIFT).to_bytes(2, "little")
-        kernel_padded[pos+2:pos+4] = (data_size >> CLICK_SHIFT).to_bytes(2, "little")
+        kernel_padded[pos:pos+2] = u16le(text_size >> CLICK_SHIFT)
+        kernel_padded[pos+2:pos+4] = u16le(data_size >> CLICK_SHIFT)
         pos += 4
 
     kernel_ds = PROG_ORG
     if kernel_header.is_sep:
         kernel_ds += kernel_header.text_size
-    kernel_padded[DS_OFFSET:DS_OFFSET+2] = (kernel_ds >> CLICK_SHIFT).to_bytes(2, "little")
+    kernel_padded[DS_OFFSET:DS_OFFSET+2] = u16le(kernel_ds >> CLICK_SHIFT)
 
     # patch fs
     init_org = PROG_ORG + minix_size - len(init_padded)
     init_text_size, init_data_size = init_header.i_d_bss_len()
     off = fs_header.text_size + 4 # info to addr 4 in fs data space
-    fs_padded[off:off+2] = (init_org >> CLICK_SHIFT).to_bytes(2, "little")
-    fs_padded[off+2:off+4] = (init_text_size >> CLICK_SHIFT).to_bytes(2, "little")
-    fs_padded[off+4:off+6] = (init_data_size >> CLICK_SHIFT).to_bytes(2, "little")
+    fs_padded[off:off+2] = u16le(init_org >> CLICK_SHIFT)
+    fs_padded[off+2:off+4] = u16le(init_text_size >> CLICK_SHIFT)
+    fs_padded[off+4:off+6] = u16le(init_data_size >> CLICK_SHIFT)
 
     # create boot image
     raw_image = bytearray()
