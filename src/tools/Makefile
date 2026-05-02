@@ -11,7 +11,7 @@ l=../../lib
 
 all:
 	make init
-	#make bootblok
+	make bootblok
 	#make build
 	#make mkfs
 	make fsck
@@ -20,23 +20,26 @@ init:	$l/libc.a init.o $l/head.o
 	$(LD) -0 -s -o init -L../../lib -Ohead.o init.o -lc -Oend.o
 	@echo init done.
 
-# bootblok.s is the source of the MINIX boot block.  The bootblock is the
-# first 512 bytes on the image file and on the boot diskette.  When bootblok.s
-# is assembled, it generates a short binary file (less than 400 bytes) that
-# must be stripped of its header and copied to the file bootblok.  The dd
-# command below does this.  If everything has been done right, the bootblok
-# file should begin with the following 8 words, in hex:
-# c0b8 8e07 33d8 b8f6 2fe0 c08e ff33 00b9
+# bootblok.s is the source of the MINIX boot block.  The bootblock is the first
+# 512 bytes on the image file and on the boot diskette.  When bootblok.s was
+# assembled with previous toolchains, a short binary file (less than 400 bytes)
+# was generated that needed to be stripped of its header and copied to the file
+# bootblok.
+#
+# **This process has since been simplified with the dev86 toolchain,
+# since `as86 -b` will assemble a raw binary file without any headers or
+# symbols.**
+#
+# If everything has been done right, the bootblok file should begin with the
+# following 8 words, in hex:
+# c0b8 8e07 31d8 b8f6 2fe0 c08e ff31 00b9
 # The exact procedure for going from bootblok.s to the binary file stripped of
 # its header is somewhat operating system dependent.  Some assemblers make
 # an object (.o) file; others make an a.out file directly. If your boot
 # diskette does not start out by printing 'Booting MINIX 1.0' the problem is
 # probably that you have not made a good boot block.
 bootblok:	bootblok.s
-	as bootblok.s
-	@strip a.out
-	@dd if=a.out of=bootblok bs=16w skip=1 count=16 2>/dev/null
-	@rm a.out
+	$(AS) $(ASFLAGS) bootblok.s -b bootblok
 	@echo bootblok done.
 
 build:	build.o

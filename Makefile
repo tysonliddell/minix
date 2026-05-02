@@ -3,7 +3,7 @@ LIB_DIR = ./lib
 LIB_FILES = $(addprefix $(LIB_DIR)/,libc.a crtso.o head.o end.o)
 BUILD_BOOTDISK = ./scripts/build-boot-disk.py
 BOOTDISK_OUT = ./MINIX-boot.img
-DISK_REQS = ./misc/bootblok ./src/kernel/kernel ./src/mm/mm ./src/fs/fs \
+DISK_REQS = ./src/tools/bootblok ./src/kernel/kernel ./src/mm/mm ./src/fs/fs \
     ./src/tools/init ./src/tools/fsck
 
 .PHONY: all minix dev86 bootblok kernel mm fs init fsck tools disk libc libc_build clean
@@ -15,9 +15,6 @@ dev86:
 	$(MAKE) -C ./vendor/dev86
 	$(MAKE) -C ./vendor/dev86 install
 
-bootblok:
-	@echo TODO: Add recipe to build the bookblok
-
 kernel:
 	$(MAKE) -C ./src/kernel
 
@@ -27,6 +24,7 @@ mm:
 fs:
 	$(MAKE) -C ./src/fs
 
+bootblok: tools
 init: tools
 fsck: tools
 
