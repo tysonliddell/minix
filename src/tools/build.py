@@ -11,7 +11,7 @@ KERNEL_D_MAGIC = 0x526F # identifies kernel data space
 FS_MM_D_MAGIC = 0xDADA
 HEADER_LEN = 0x20
 FLOPPY_360K_SIZE = 360*1024
-ALIGN = 16
+CLICK_ALIGN = 16
 CLICK_SHIFT = 4
 DS_OFFSET = 4           # position of DS written in kernel text seg
 
@@ -25,7 +25,7 @@ class HeaderInfo:
     symbols_size: int
     is_sep: bool
 
-    def total_mem(self):
+    def total_size(self):
         return self.text_size + self.data_size + self.bss_size
 
     def i_d_bss_len(self):
@@ -33,6 +33,12 @@ class HeaderInfo:
             return self.text_size, self.data_size + self.bss_size
         else:
             return 0, self.text_size + self.data_size + self.bss_size
+
+    def print_sizes(self, name):
+        print("{:>6}  text={:>5}  data={:>5}  bss={:>5}  tot={:>5}  hex={:>5X}  {}".format(
+            name, self.text_size, self.data_size, self.bss_size, self.total_size(),
+            self.total_size(), ("Separate I & D" if self.is_sep else "")
+        ))
 
     @classmethod
     def from_bytes(cls, bytes_):
@@ -57,21 +63,16 @@ class HeaderInfo:
         )
 
         if is_sep:
-            assert hdr.text_size % ALIGN == 0, f"Bad text size {hdr.text_size}"
-
-        print("text={}  data={}  bss={}  tot={}  hex={}  {}\n".format(
-            hdr.text_size, hdr.data_size, hdr.bss_size, hdr.total_mem(),
-            hdr.total_mem(), ("Separate I & D" if hdr.is_sep else "")
-        ))
+            assert hdr.text_size % CLICK_ALIGN == 0, f"Bad text size {hdr.text_size}"
 
         return hdr
 
 def strip_and_pad(exec_bytes):
     header = HeaderInfo.from_bytes(exec_bytes[:HEADER_LEN])
     program = exec_bytes[HEADER_LEN:] + b'\x00'*header.bss_size
-    padding = (-len(program)) % ALIGN
+    padding = (-len(program)) % CLICK_ALIGN
     header.bss_size += padding
-    return header, exec_bytes[HEADER_LEN:] + b'\x00' * padding
+    return header, program + b'\x00' * padding
 
 def build_360k_floppy_image(bootblok, kernel, mm, fs, init, fsck):
     bootblok_padded = bootblok.ljust(SECTOR_SIZE, b'\x00')
@@ -115,21 +116,22 @@ def build_360k_floppy_image(bootblok, kernel, mm, fs, init, fsck):
     pos = kernel_header.text_size   # start of data section
     for prog_hdr in [kernel_header, mm_header, fs_header, init_header]:
         text_size, data_size = prog_hdr.i_d_bss_len()
-        kernel_padded[pos:][:2] = (text_size >> CLICK_SHIFT).to_bytes(2, "little")
-        kernel_padded[pos+2:][:2] = (data_size >> CLICK_SHIFT).to_bytes(2, "little")
-        pos += 2
+        kernel_padded[pos:pos+2] = (text_size >> CLICK_SHIFT).to_bytes(2, "little")
+        kernel_padded[pos+2:pos+4] = (data_size >> CLICK_SHIFT).to_bytes(2, "little")
+        pos += 4
 
     kernel_ds = PROG_ORG
     if kernel_header.is_sep:
         kernel_ds += kernel_header.text_size
-    kernel_padded[DS_OFFSET:][:2] = (kernel_ds >> CLICK_SHIFT).to_bytes(2, "little")
+    kernel_padded[DS_OFFSET:DS_OFFSET+2] = (kernel_ds >> CLICK_SHIFT).to_bytes(2, "little")
 
     # patch fs
     init_org = PROG_ORG + minix_size - len(init_padded)
     init_text_size, init_data_size = init_header.i_d_bss_len()
-    fs_padded[4:6] = (init_org >> CLICK_SHIFT).to_bytes(2, "little")
-    fs_padded[6:8] = (init_text_size >> CLICK_SHIFT).to_bytes(2, "little")
-    fs_padded[8:10] = (init_data_size >> CLICK_SHIFT).to_bytes(2, "little")
+    off = fs_header.text_size + 4 # info to addr 4 in fs data space
+    fs_padded[off:off+2] = (init_org >> CLICK_SHIFT).to_bytes(2, "little")
+    fs_padded[off+2:off+4] = (init_text_size >> CLICK_SHIFT).to_bytes(2, "little")
+    fs_padded[off+4:off+6] = (init_data_size >> CLICK_SHIFT).to_bytes(2, "little")
 
     # create boot image
     raw_image = bytearray()
@@ -140,12 +142,29 @@ def build_360k_floppy_image(bootblok, kernel, mm, fs, init, fsck):
     raw_image.extend(init_padded)
     raw_image.extend(fsck_padded)
 
+    print_stats(kernel_header, mm_header, fs_header, init_header, fsck_header, minix_size, len(raw_image)-512)
+
     assert (
         len(raw_image) <= FLOPPY_360K_SIZE
     ), "Not enough space on 360K floppy for boot image"
 
+    print(f"Padded {len(raw_image)} byte image with zeroes to make 360K disk image.")
     raw_image = raw_image.ljust(FLOPPY_360K_SIZE, b'\x00')
     return raw_image
+
+def print_stats(kernel_header, mm_header, fs_header, init_header, fsck_header, minix_image_size, total_size):
+    assert (
+        minix_image_size == kernel_header.total_size() + mm_header.total_size()
+            + fs_header.total_size() + init_header.total_size()
+    )
+
+    kernel_header.print_sizes("kernel")
+    mm_header.print_sizes("mm")
+    fs_header.print_sizes("fs")
+    init_header.print_sizes("init")
+    print(" "*47 + "-"*5 + " "*6 + "-"*5)
+    print("Operating system size  {:>29}      {:>5X}".format(minix_image_size, minix_image_size))
+    print(f"\nTotal size including fsck is {total_size}.")
 
 if __name__ == "__main__":
     import argparse
@@ -177,6 +196,5 @@ if __name__ == "__main__":
             fsck=bytearray(fsck.read()),
         )
 
-    # TODO: write image back to file
     with open(args.out_file, 'wb') as out:
-        pass
+        out.write(image)
