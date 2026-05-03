@@ -1,0 +1,26 @@
+# The default stack size is 1K.  The following commands need more.
+cc 2000
+time 2000
+tail 2000
+cpp 40000
+cem 52000
+opt 20000
+cg 30000
+sort 30000
+asld 30000
+mkfs 16000
+dd 8000
+rmdir 8000
+mkdir 8000
+dosread 32000
+make 20000
+gres 8000
+grep 8000
+sh 8000
+mv 8000
+rm 8000
+pr 8000
+libpack 64000
+libupack 64000
+mined 64000
+df 8000

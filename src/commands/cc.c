@@ -27,6 +27,8 @@ struct arglist {
 	char *al_argv[MAXARGC];
 };
 
+#ifndef MEM640K
+#ifndef MEM512K
 !!!!_SEE_BELOW_!!!
 /* This is not an error.  It is a dirty trick to force the user to read this
  * comment.  The program cc calls the various passes of the compiler.  To call
@@ -41,6 +43,8 @@ struct arglist {
 
 /* #define MEM640K */
 /* #define MEM512K */
+#endif
+#endif
 
 #ifdef MEM640K
 /* MINIX paths for 640K PC (not 512K AT) */

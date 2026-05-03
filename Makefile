@@ -6,30 +6,33 @@ BOOTDISK_OUT = ./MINIX-boot.img
 DISK_REQS = ./src/tools/bootblok ./src/kernel/kernel ./src/mm/mm ./src/fs/fs \
     ./src/tools/init ./src/tools/fsck
 
-.PHONY: all minix dev86 bootblok kernel mm fs init fsck tools disk libc libc_build clean
+.PHONY: all minix dev86 bootblok kernel mm fs init fsck tools commands disk libc libc_build clean
 
-all: minix
-minix: libc bootblok kernel mm fs init fsck
+all: libc minix commands
+minix: bootblok kernel mm fs init fsck
 
 dev86:
 	$(MAKE) -C ./vendor/dev86
 	$(MAKE) -C ./vendor/dev86 install
 
-kernel:
+kernel: libc
 	$(MAKE) -C ./src/kernel
 
-mm:
+mm: libc
 	$(MAKE) -C ./src/mm
 
-fs:
+fs: libc
 	$(MAKE) -C ./src/fs
 
 bootblok: tools
 init: tools
 fsck: tools
 
-tools:
+tools: libc
 	$(MAKE) -C ./src/tools
+
+commands: libc
+	$(MAKE) -C ./src/commands
 
 disk: minix $(BOOTDISK_OUT)
 
@@ -52,6 +55,7 @@ libc_build:
 	$(MAKE) -C $(LIB_SRC_DIR)
 
 clean:
+	$(MAKE) -C ./src/commands clean
 	$(MAKE) -C ./src/tools clean
 	$(MAKE) -C ./src/fs clean
 	$(MAKE) -C ./src/mm clean

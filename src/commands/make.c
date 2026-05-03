@@ -1161,7 +1161,7 @@ char temp[50],tempdep[50];
 	 }
 #endif
      else {
-	 error2("unknown directive \(rule?\) '%s'",temp);
+	 error2("unknown directive (rule?) '%s'",temp);
      }
      break;
 

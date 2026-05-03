@@ -10,7 +10,7 @@ CFLAGS=-0 -Di8088 -I../include -O
 ASFLAGS=-0 -a
 
 LIB_C_SRC=$(wildcard *.c)
-LIB_S_SRC=brksize.s  catchsig.s  getutil.s  sendrec.s  setjmp.s
+LIB_S_SRC=brksize.s catchsig.s getutil.s sendrec.s setjmp.s csv.s
 LIB_C_OBJ=$(LIB_C_SRC:.c=.o)
 LIB_S_OBJ=$(LIB_S_SRC:.s=.o)
 BCC_OBJ=$(wildcard ./bcc/*.o)

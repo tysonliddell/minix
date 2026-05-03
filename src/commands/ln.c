@@ -4,6 +4,17 @@
 char name[17];
 struct stat stb;
 
+char *last_comp(s)
+char *s;
+{
+/* Return pointer to last component of string. */
+  int n;
+  n = strlen(s);
+  while (n--)
+	if (*(s+n) == '/') return(s+n+1);
+  return(s);
+}
+
 main(argc, argv)
 int argc;
 char **argv;
@@ -42,18 +53,6 @@ char **argv;
   }
   exit(0);
 }
-
-char *last_comp(s)
-char *s;
-{
-/* Return pointer to last component of string. */
-  int n;
-  n = strlen(s);
-  while (n--) 
-	if (*(s+n) == '/') return(s+n+1);
-  return(s);
-}
-
 
 usage()
 {
