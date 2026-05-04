@@ -1,0 +1,21 @@
+00001 0000                                      .text
+00002 0000           31C0                       xor     ax,ax
+00003                                           
+00004 0000                                      .data
+00005 0000                  0000000A            .zerow 10
+00006                                           
+00007 0014                                      .bss
+00008                                           ; using .zerob in the bss section causes as86 to add zeroes to the data section
+00009                                           ; which is not what we want. The BSS should contain uninitialised data and
+00010                                           ; should live outside of the data segment.
+00011                       00000014>           stack1:
+00012 0014                  000003E8            .zerow 1000
+00013                                           
+00014                                           ; Using a .comm declaration results in the data residing in the bss.
+00015 07E4                                      .comm stack2,1000*2
+
+Symbols:
+stack1                      3 0014 R   stack2                      3 07D0 R C 
+
+00000 errors
+00000 warnings

@@ -134,4 +134,4 @@ tmp1:	.word 0
 tmp2:	.word 0
 .bss
 begbss:
-kerstack:	.zerow STACKSIZE/2	; kernel stack
+.comm kerstack,STACKSIZE	; kernel stack

@@ -17,3 +17,7 @@
   from bootblok.s. `asld` might have needed these, but `as86 -b` complains.
 - Updated bootblok makefile comment since as86 generates different (but
   equivalent) opcodes for `xor si,si` and `xor di,di` instructions.
+- as86 doesn't always respect the .bss directive and assembles some .bss
+  declared symbols from the MINIX assembly source code into the data segment.
+  Depending on how the stack is defined, this can break things. Fixed this
+  by adding .comm assembly directives to some MINIX assembly source code.
