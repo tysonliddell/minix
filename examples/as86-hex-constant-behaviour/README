@@ -1,0 +1,20 @@
+# Debugging an assembly issue
+
+Turns out the following 4 instructions don't all generate the same assembly
+code when using the `as86` assembler from the dev86 toolchain:
+
+movb	al,*7
+movb	al,0x07
+movb	al,#0x07
+movb	al,#7
+
+The opcodes generated are:
+
+B0 07       movb al,*7
+A0 00 07    movb al,0x07 (interpreted as `mov al,[0x0007]`)
+B0 07       movb al,#0x07
+B0 07       movb al,#7
+
+In particular, note that the `0x07` literal in being interpreted as a memory
+address rather than a numeric constant literal. This results in a different
+8088 instruction. Both as86 and MINIX's asld behave this way.

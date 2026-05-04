@@ -1,0 +1,9 @@
+00001 0000           B0                     07  movb	al,*7
+00002 0002           A0         0007            movb	al,0x07
+00003 0005           B0                     07  movb	al,#0x07
+00004 0007           B0                     07  movb	al,#7
+
+Symbols:
+
+00000 errors
+00000 warnings
