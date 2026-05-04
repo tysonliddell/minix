@@ -1,5 +1,6 @@
-BCC_PATH=$PWD/vendor/bcc \
-PATH=$BCC_PATH/bin:$PATH \
-MANPATH=$BCC_PATH/man:$MANPATH \
-PS1="$PS1[dev86]: " \
-bash --noprofile --norc
+bash --rcfile <(cat ~/.bashrc; \
+    echo 'PS1="$PS1[dev86]: "'; \
+    echo 'BCC_PATH="$PWD/vendor/bcc"'; \
+    echo 'PATH="$BCC_PATH/bin:$PATH"'; \
+    echo 'MANPATH="$BCC_PATH/man:$MANPATH"'; \
+)
