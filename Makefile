@@ -37,7 +37,6 @@ commands: libc
 disk: minix $(BOOTDISK_OUT)
 
 $(BOOTDISK_OUT): $(DISK_REQS)
-	@echo TODO: add bookblok to build
 	python3 $(BUILD_BOOTDISK) $(DISK_REQS) $(BOOTDISK_OUT)
 
 libc: $(LIB_FILES)

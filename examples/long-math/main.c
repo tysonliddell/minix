@@ -8,7 +8,6 @@ int main()
     short y1 = 3;
     unsigned int x2 = 0x5678;
     unsigned int y2 = 7;
-    printf("Hello, from an x64 machine!\n");
     printf("LONGS:\n");
     printf("%d\n", x+y);
     printf("%d\n", x-y);

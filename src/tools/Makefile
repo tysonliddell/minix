@@ -7,12 +7,10 @@ CFLAGS=-0 -Di8088 -I../include -O
 
 l=../../lib
 
-#CFLAGS = -O -DPCIX
-
 all:
 	make init
 	make bootblok
-	#make build
+	make build
 	#make mkfs
 	make fsck
 
@@ -42,37 +40,35 @@ bootblok:	bootblok.s
 	$(AS) $(ASFLAGS) bootblok.s -b bootblok
 	@echo bootblok done.
 
-build:	build.o
-	cc -o build build.o
+build: build.o $l/libc.a
+	$(LD) -0 -s -o $@ -L../../lib -Cso $< -lc -Oend.o
 	@echo build done.
 
-mkfs:	mkfs.o
-	cc -o mkfs mkfs.o
+mkfs: mkfs.o $l/libc.a
+	$(LD) -0 -s -o $@ -L../../lib -Cso $< -lc -Oend.o
 	@echo mkfs done.
 mkfs.o:	mkfs.c
 	cc -c -O -DUNIX mkfs.c
 
-fsck:	fsck.o fsck1.o
+fsck: fsck.o fsck1.o $l/libc.a
 	$(LD) -0 -s -o fsck -L../../lib fsck1.o fsck.o -lc -Oend.o
 	@echo fsck done.
-
-#fsck.o: fsck.s
-
-#fsck.s: fsck.c
-#	$(CC) $(CFLAGS) -o fsck.s fsck.c
 
 fsck1.o:	fsck1.s
 
 
+# NOTE: The following MINIX procedure to build a boot disk has been replaced by
+# a Python script when cross-compiling. Use that instead.
+#
 # 'make image'  combines the bootblock, kernel, memory manager, file
 # system, init and fsck into a single file, called image.  Each of these pieces
 # appears in the image file just as the original does on the disk, except that
 # the header at the front is removed, and each piece is padded out to an
 # integral multiple of 16 bytes.  Build also prints a message telling how big
 # the various pieces (except fsck) are.
-image:	 build bootblok ../kernel/kernel ../mm/mm ../fs/fs init fsck
-	@build bootblok ../kernel/kernel ../mm/mm ../fs/fs init fsck  image
-	cp image /dev/fd0
+#image:	 build bootblok ../kernel/kernel ../mm/mm ../fs/fs init fsck
+#	@build bootblok ../kernel/kernel ../mm/mm ../fs/fs init fsck  image
+#	cp image /dev/fd0
 
 # 'make usr' builds a file system on a file called 'usr', and then
 # copies this file to the diskette (9 sectors per track).  It builds the file
@@ -133,3 +129,4 @@ clean:
 	rm -f bootblok
 	rm -f init
 	rm -f fsck
+	rm -f build
