@@ -17,7 +17,6 @@ BCC_OBJ=$(wildcard ./bcc/*.o)
 LIBC=libc.a
 
 CRTSO_OBJ=crtso.o
-END_OBJ=end.o
 HEAD_OBJ=head.o
 
 .PHONY: all
@@ -36,7 +35,7 @@ $(LIBC): $(LIB_C_OBJ) $(LIB_S_OBJ) $(BCC_OBJ)
 	$(AR) r $(LIBC) $^
 
 .PHONY: c_runtime
-c_runtime: $(CRTSO_OBJ) $(END_OBJ) $(HEAD_OBJ)
+c_runtime: $(CRTSO_OBJ) $(HEAD_OBJ)
 
 .PHONY: clean
 clean:

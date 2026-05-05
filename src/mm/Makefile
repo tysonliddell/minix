@@ -11,9 +11,9 @@ l=../../lib
 obj =	main.o forkexit.o break.o exec.o signal.o getset.o  \
 	alloc.o utility.o table.o putc.o 
 
-mm:	Makefile  $l/head.o $(obj) $l/libc.a $l/end.o
+mm:	Makefile  $l/head.o $(obj) $l/libc.a
 	@echo "Start linking MM"
-	$(LD) -0 -s -o mm -L../../lib -Ohead.o $(obj) -lc -Oend.o
+	$(LD) -0 -s -o mm -L../../lib -Ohead.o $(obj) -lc
 	@echo "MM done"
 
 

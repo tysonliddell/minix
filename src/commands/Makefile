@@ -34,20 +34,21 @@ $(PROGS) $(BIG_PROGS): %: bin/% ;
 
 $(addprefix bin/,$(PROGS)): bin/%: %.o $l/libc.a $(MEM_ALLOC_FILE) $(CHMEM_64)
 	@mkdir -p bin
-	$(LD) -0 -s -o $@ -L../../lib -Cso $< -lc -Oend.o
+	$(LD) -0 -s -o $@ -L../../lib -Cso $< -lc
 	./$(CHMEM_64) =$(call get_stack_size,$*) $@
 	@echo "$@ done."
 
+# link mined with -i for separate I & D
 bin/mined:	mined1.o mined2.o mined.h $l/libc.a $(MEM_ALLOC_FILE) $(CHMEM_64)
 	@mkdir -p bin
-	$(LD) -0 -s -o bin/mined -L../../lib -Cso mined1.o mined2.o -lc -Oend.o
+	$(LD) -0 -s -i -o bin/mined -L../../lib -Cso mined1.o mined2.o -lc
 	./$(CHMEM_64) =$(call get_stack_size,mined) $@
 	@echo "$@ done."
 
 shobj = sh1.o sh2.o sh3.o sh4.o sh5.o
 bin/sh:	$(shobj) sh.h $l/libc.a $(MEM_ALLOC_FILE) $(CHMEM_64)
 	@mkdir -p bin
-	$(LD) -0 -s -o bin/sh -L../../lib -Cso $(shobj) -lc -Oend.o
+	$(LD) -0 -s -o bin/sh -L../../lib -Cso $(shobj) -lc
 	./$(CHMEM_64) =$(call get_stack_size,sh) $@
 	@echo "$@ done."
 

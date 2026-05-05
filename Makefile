@@ -1,6 +1,6 @@
 LIB_SRC_DIR = ./src/lib
 LIB_DIR = ./lib
-LIB_FILES = $(addprefix $(LIB_DIR)/,libc.a crtso.o head.o end.o)
+LIB_FILES = $(addprefix $(LIB_DIR)/,libc.a crtso.o head.o)
 BUILD_BOOTDISK = ./scripts/build-boot-disk.py
 BOOTDISK_OUT = ./MINIX-boot.img
 DISK_REQS = ./src/tools/bootblok ./src/kernel/kernel ./src/mm/mm ./src/fs/fs \
@@ -43,7 +43,6 @@ libc: $(LIB_FILES)
 
 $(LIB_DIR)/libc.a: $(LIB_SRC_DIR)/libc.a
 $(LIB_DIR)/crtso.o: $(LIB_SRC_DIR)/crtso.o
-$(LIB_DIR)/end.o: $(LIB_SRC_DIR)/end.o
 $(LIB_DIR)/head.o: $(LIB_SRC_DIR)/head.o
 
 $(LIB_DIR)/%: | libc_build

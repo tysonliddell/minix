@@ -20,9 +20,9 @@ $(OUT): main.o
 	# crtso needs to reside at address 0 of the text segment for MINIX to be
 	# happy, since MINIX does not use the entry point address in the executable
 	# header (the 6th long in the header). This means that -Cso needs to be
-	# specified before any other files (-lc, xxx.o, end.o, etc.) to make this
+	# specified before any other files (-lc, xxx.o, etc.) to make this
 	# happen.
-	$(LD) $(LD_DEBUG_FLAGS) -0 -s -L../../lib -Cso -lc main.o -Oend.o -o $(OUT) -H $(MEM_ALLOC)
+	$(LD) $(LD_DEBUG_FLAGS) -0 -s -L../../lib -Cso -lc main.o -o $(OUT) -H $(MEM_ALLOC)
 
 clean:
 	rm -f *.o

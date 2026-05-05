@@ -1,5 +1,5 @@
 .globl _get_base, _get_size, _get_tot_mem
-.globl endbss
+.globl __end
 
 ;*========================================================================*
 ;                           utilities                                     *
@@ -9,7 +9,7 @@ _get_base:			; return click at which prog starts
 	ret
 
 _get_size:			; return prog size in bytes (text+data+bss)
-	mov ax,#endbss		; end is compiler label at end of bss
+	mov ax,#__end		; __end is linker label at end of bss
 	ret
 
 ; Find out how much memory the machine has, including vectors, kernel MM, etc.

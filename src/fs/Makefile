@@ -12,9 +12,9 @@ obj =	main.o open.o read.o write.o pipe.o device.o \
 	path.o mount.o link.o super.o inode.o cache.o filedes.o \
 	stadir.o protect.o time.o misc.o utility.o table.o putc.o
 
-fs:	Makefile  $l/head.o $(obj) $l/libc.a $l/end.o
+fs:	Makefile  $l/head.o $(obj) $l/libc.a
 	@echo "Start linking FS"
-	$(LD) -0 -s -o fs -L../../lib -Ohead.o $(obj) -lc -Oend.o
+	$(LD) -0 -s -o fs -L../../lib -Ohead.o $(obj) -lc
 	@echo "FS done"
 
 cache.o:	const.h type.h $h/const.h $h/type.h

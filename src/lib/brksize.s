@@ -1,3 +1,3 @@
 .data
-.globl endbss, _brksize
-_brksize: .word endbss
+.globl _brksize, __end
+_brksize: .word __end  ; defined by ld86

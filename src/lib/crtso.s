@@ -3,7 +3,7 @@
 ; way _main expects them.
 
 .globl _main, _exit, crtso, _environ, ___mkargv
-.globl begtext, begdata, begbss, endtext, enddata, endbss
+.globl begtext, begdata, begbss
 entry crtso     ; force ld86 to include crtso label
 
 ; Note: BCC Tells the linker to init argv by adding a global reference to its

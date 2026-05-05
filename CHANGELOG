@@ -21,3 +21,5 @@
   declared symbols from the MINIX assembly source code into the data segment.
   Depending on how the stack is defined, this can break things. Fixed this
   by adding .comm assembly directives to some MINIX assembly source code.
+- Replaced `end.s` with __endtext, __edata, and __end labels provided by ld86
+  to fix initial _brksize value.

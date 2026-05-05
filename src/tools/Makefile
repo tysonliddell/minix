@@ -15,7 +15,7 @@ all:
 	make fsck
 
 init:	$l/libc.a init.o $l/head.o
-	$(LD) -0 -s -o init -L../../lib -Ohead.o init.o -lc -Oend.o
+	$(LD) -0 -s -o init -L../../lib -Ohead.o init.o -lc
 	@echo init done.
 
 # bootblok.s is the source of the MINIX boot block.  The bootblock is the first
@@ -41,17 +41,17 @@ bootblok:	bootblok.s
 	@echo bootblok done.
 
 build: build.o $l/libc.a
-	$(LD) -0 -s -o $@ -L../../lib -Cso $< -lc -Oend.o
+	$(LD) -0 -s -o $@ -L../../lib -Cso $< -lc
 	@echo build done.
 
 mkfs: mkfs.o $l/libc.a
-	$(LD) -0 -s -o $@ -L../../lib -Cso $< -lc -Oend.o
+	$(LD) -0 -s -o $@ -L../../lib -Cso $< -lc
 	@echo mkfs done.
 mkfs.o:	mkfs.c
 	cc -c -O -DUNIX mkfs.c
 
 fsck: fsck.o fsck1.o $l/libc.a
-	$(LD) -0 -s -o fsck -L../../lib fsck1.o fsck.o -lc -Oend.o
+	$(LD) -0 -s -o fsck -L../../lib fsck1.o fsck.o -lc
 	@echo fsck done.
 
 fsck1.o:	fsck1.s
