@@ -16,6 +16,9 @@ Tyson
 - Run `source ./scripts/activate-shell` from the project root to spawn a new
   shell with the dev86 toolchain added to your path, making life easier when
   running the toolchain outside of `make`.
+- The ./disks directory contains the original MINIX 1.1 disks distributed by
+  Prentice-Hall as well as a blank 360k floppy image that has been formatted
+  for MINIX.
 
 ## What is this?
 
