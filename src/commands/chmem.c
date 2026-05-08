@@ -52,11 +52,12 @@ char *argv[];
   if (*p == '=') newdynam = lsize;
   else if (*p == '+') newdynam = olddynam + lsize;
   else if (*p == '-') newdynam = olddynam - lsize;
+
   newtot = header[DATA] + header[BSS] + newdynam;
+  if (separate == 0) newtot += header[TEXT];
   overflow = (newtot > MAX ? newtot - MAX : 0);	/* 64K max */
   newdynam -= overflow;
   newtot -= overflow;
-  if (separate == 0) newtot += header[TEXT];
   lseek(fd, (long) TOTPOS, 0);
   if (write(fd, &newtot, 4) < 0)
 	stderr3("chmem: can't modify ", argv[2], "\n");
