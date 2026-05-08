@@ -1,9 +1,7 @@
 DEV86_BIN=../../vendor/bcc/bin
 CC=$(DEV86_BIN)/bcc
-AS=$(DEV86_BIN)/as86
 LD=$(DEV86_BIN)/ld86
-ASFLAGS=-0 -a
-CFLAGS=-0 -Di8088 -I../include -O
+CFLAGS=-0 -Di8088 -I -I../include -O
 
 l=../../lib
 MEM_ALLOC_FILE = ./STACK_SIZES
@@ -14,7 +12,7 @@ PROGS = ar basename cat cc chmem chmod chown clr cmp comm cp date dd df \
     shar size sleep sort split stty su sum sync tail tar tee time touch tr \
     umount uniq update wc
 BIG_PROGS = mined sh
-CHMEM_64 = chmem-64
+CHMEM_64 = ./chmem-64
 
 try_get_stack_size = $(shell awk '/^$(1) / {print $$2}' $(MEM_ALLOC_FILE))
 get_stack_size = $(or $(call try_get_stack_size,$(1)), $(DEFAULT_STACK_SIZE))
@@ -35,21 +33,21 @@ $(PROGS) $(BIG_PROGS): %: bin/% ;
 $(addprefix bin/,$(PROGS)): bin/%: %.o $l/libc.a $(MEM_ALLOC_FILE) $(CHMEM_64)
 	@mkdir -p bin
 	$(LD) -0 -s -o $@ -L../../lib -Cso $< -lc
-	./$(CHMEM_64) =$(call get_stack_size,$*) $@
+	$(CHMEM_64) =$(call get_stack_size,$*) $@
 	@echo "$@ done."
 
 # link mined with -i for separate I & D
 bin/mined:	mined1.o mined2.o mined.h $l/libc.a $(MEM_ALLOC_FILE) $(CHMEM_64)
 	@mkdir -p bin
 	$(LD) -0 -s -i -o bin/mined -L../../lib -Cso mined1.o mined2.o -lc
-	./$(CHMEM_64) =$(call get_stack_size,mined) $@
+	$(CHMEM_64) =$(call get_stack_size,mined) $@
 	@echo "$@ done."
 
 shobj = sh1.o sh2.o sh3.o sh4.o sh5.o
 bin/sh:	$(shobj) sh.h $l/libc.a $(MEM_ALLOC_FILE) $(CHMEM_64)
 	@mkdir -p bin
-	$(LD) -0 -s -o bin/sh -L../../lib -Cso $(shobj) -lc
-	./$(CHMEM_64) =$(call get_stack_size,sh) $@
+	$(LD) -0 -s -i -o bin/sh -L../../lib -Cso $(shobj) -lc
+	$(CHMEM_64) =$(call get_stack_size,sh) $@
 	@echo "$@ done."
 
 # Configure MINIX cc for a 640K machine. MEM512K is also available.

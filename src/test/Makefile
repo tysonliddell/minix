@@ -1,7 +1,7 @@
 DEV86_BIN=../../vendor/bcc/bin
 CC=$(DEV86_BIN)/bcc
 LD=$(DEV86_BIN)/ld86
-CFLAGS=-0 -Di8088 -I../include -O
+CFLAGS=-0 -Di8088 -I -I../include -O
 
 l=../../lib
 BLANK_DISK_IMG = ../../disks/360k-minix-formatted.img

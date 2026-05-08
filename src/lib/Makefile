@@ -4,7 +4,7 @@ AS=$(DEV86_BIN)/as86
 LD=$(DEV86_BIN)/ld86
 AR=$(DEV86_BIN)/ar86
 
-CFLAGS=-0 -Di8088 -I../include -O
+CFLAGS=-0 -Di8088 -I -I../include -O
 
 # use -a flag for MINIX asld compatibility
 ASFLAGS=-0 -a

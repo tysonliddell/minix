@@ -3,7 +3,7 @@ CC=$(DEV86_BIN)/bcc
 AS=$(DEV86_BIN)/as86
 LD=$(DEV86_BIN)/ld86
 ASFLAGS=-0 -a
-CFLAGS=-0 -Di8088 -I../include -O
+CFLAGS=-0 -Di8088 -I -I../include -O
 
 h=../h
 l=../../lib
