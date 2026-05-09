@@ -17,7 +17,7 @@ SOBJ=memcpy.o
 
 DEV86_PATH=../../../vendor/dev86
 CC=$(DEV86_PATH)/bin/bcc
-CFLAGS=-0
+CFLAGS=-0 -O
 
 .PHONY: all
 all: $(IOBJ) $(LOBJ) $(SOBJ) ldiv.o __ldivmod.o
