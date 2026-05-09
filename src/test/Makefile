@@ -13,15 +13,7 @@ TEST_BIN = $(addprefix bin/,$(TEST_SRC:.c=))
 CHMEM_64 = ./chmem-64
 STACK_SIZE = 8000
 
-.PHONY: test-disk tests clean
-
-test-disk: tests
-	cp $(BLANK_DISK_IMG) $(TEST_DISK_IMG)
-	mkdir $(TEST_DISK_MNT)
-	sudo mount -t minix $(TEST_DISK_IMG) $(TEST_DISK_MNT)
-	sudo cp run bin/* $(TEST_DISK_MNT)
-	sudo umount $(TEST_DISK_MNT)
-	rmdir $(TEST_DISK_MNT)
+.PHONY: tests test-disk clean
 
 tests: $(TEST_BIN)
 
@@ -33,6 +25,14 @@ bin/%: %.o $l/libc.a $(CHMEM_64)
 
 bin/test10: bin/t10a
 bin/test11: bin/t11a bin/t11b
+
+test-disk: tests
+	cp $(BLANK_DISK_IMG) $(TEST_DISK_IMG)
+	mkdir $(TEST_DISK_MNT)
+	sudo mount -t minix $(TEST_DISK_IMG) $(TEST_DISK_MNT)
+	sudo cp run bin/* $(TEST_DISK_MNT)
+	sudo umount $(TEST_DISK_MNT)
+	rmdir $(TEST_DISK_MNT)
 
 # a quick and dirty port of chmem to run on the 64-bit host.
 $(CHMEM_64): chmem-64.c
